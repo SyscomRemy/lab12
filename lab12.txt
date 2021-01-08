@@ -1,0 +1,135 @@
+CRlab12
+_______________________________________________________________________________________________________________________________________________________________________________________________________
+1.
+
+ git clone https://github.com/u-boot/u-boot
+
+2.
+
+ git checkout v2018.05 (permet de basculer sur la brance v2018.05 une version antérieur au lieu de la branche principale master)
+
+3.
+
+ git branch
+ * (HEAD detached at v2018.05)
+ master
+
+On est bien sur v2018.05
+
+4.
+ ls * | grep black
+ 
+ affiche:
+ am335x_boneblack_defconfig
+ am335x_boneblack_vboot_defconfig
+ 
+ fichier de configuration de la carte
+
+5.
+	  make am335x_boneblack_defconfig
+	  HOSTCC  scripts/basic/fixdep
+	  HOSTCC  scripts/kconfig/conf.o
+	  SHIPPED scripts/kconfig/zconf.tab.c
+	  SHIPPED scripts/kconfig/zconf.lex.c
+	  SHIPPED scripts/kconfig/zconf.hash.c
+	  HOSTCC  scripts/kconfig/zconf.tab.o
+	  HOSTLD  scripts/kconfig/conf
+	  
+	  On a bien un .config qui a été créé et qui correspond à celui de la carte arm qu'on va utiliser
+
+	 ls .config
+	 affiche:
+	 .config
+
+	grep -n CONFIG_SYS_PROMPT .config
+	379:CONFIG_SYS_PROMPT="=> "
+	
+	CONFIG_SYS_PROMPT="BARDIAU_ITOUDJ-uboot=> " permet de donner un nom au bootloader
+6.
+
+	ls * | grep MLO
+	MLO
+	MLO.byteswap
+	ls * | grep u-boot.img
+	u-boot.img
+
+MLO initialise la SRAM puis donne la main à u-boot.img pour accéder vers le terminal.
+
+
+
+8.
+ mount est une commande qui nous donne tout le contenu de la carte sd 
+
+
+9.
+
+ sudo fdisk -l
+ /dev/sdc1  *     2048 7862271 7860224  3.8G  e W95 FAT16 (LBA)
+
+ fdisk -l permet de lire la liste des périphériques de stockage (disques dur, clés usb,…) avec la liste des partitions, leur type de formattage et leur taille.Concernant le sdc on a une partition sdc1.
+
+
+- dmesg :
+fournit des infos que nous donne le noyau sur la casrte SD. Dans notre cas, ça démontre bien que notre carte s'appelle sdc1 :
+
+	student@ubuntu:~/lab12$ dmesg | tail
+	[ 8271.279195] sd 33:0:0:1: Attached scsi generic sg3 type 0
+	[ 8271.289989] sd 33:0:0:1: [sdc] 7862272 512-byte logical blocks: (4.03 GB/3.75 GiB)
+	[ 8271.294181] sd 33:0:0:1: [sdc] Write Protect is off
+	[ 8271.294182] sd 33:0:0:1: [sdc] Mode Sense: 03 00 00 00
+	[ 8271.298376] sd 33:0:0:1: [sdc] No Caching mode page found
+	[ 8271.298378] sd 33:0:0:1: [sdc] Assuming drive cache: write through
+	[ 8271.307398] sd 33:0:0:0: [sdb] Attached SCSI removable disk
+	[ 8271.363981]  sdc: sdc1
+	[ 8271.381924] sd 33:0:0:1: [sdc] Attached SCSI removable disk
+	[ 8271.987772] FAT-fs (sdc1): Volume was not properly unmounted. 	Some data may be corrupt. Please run fsck.
+
+10.
+ umount /dev/sdc1 supprime la partition sdc1 du périphérique sdc.
+
+11.
+
+	sudo dd if=/dev/zero of=/dev/peripherqiue 
+
+	sudo dd if=/dev/zero of=/dev/sdc bs=1024 count=102
+	102+0 records in
+	102+0 records out
+	104448 bytes (104 kB, 102 KiB) copied, 0.0996849 s, 1.0 MB/s
+
+        le fait de mettre des zéros permet de simuler un formatage du disque car on ne peut plus définir les différentes partitions car on a fait umount précédement.
+
+12.
+ 
+ cette étape permet d'accéder à une interface graphique nous permettant de créer un partition dans le disque qu'il sera possible de booter et qui a une taille de 3.8G ( qui est la taille de tout le stockage )
+
+13. sudo mkfs.vfat -F 32 /dev/sdc1 -n boot nous avons formatter notre partition en fat 32.
+
+
+14.
+
+
+quand on retire, et réinsère le disque, on le voit apparaite sous le nom de boot.
+et celui-ci est bien dans /media/student, pour s'en assurer :
+
+ cd /media/student
+ ls
+ boot
+
+
+CONFIG_SYS_PROMPT="BARDIAU_ITOUDJ-uboot=> "
+
+14.
+ cd lab12/u-boot :
+ cp MLO u-boot.img /media/student/boot Ici on copie les fichiers qui vont initialiser la SRAM et donner la main au terminal
+
+
+
+
+
+
+
+
+
+
+
+
