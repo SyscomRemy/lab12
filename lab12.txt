@@ -58,7 +58,7 @@ MLO initialise la SRAM puis donne la main à u-boot.img pour accéder vers le te
 
 
 8.
- mount est une commande qui nous donne tout le contenu de la carte sd 
+ mount est une commande qui permet de creer un point de montage sur le disque, ce même point de montage est associé à un répertoire. 
 
 
 9.
