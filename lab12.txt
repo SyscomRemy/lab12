@@ -70,7 +70,7 @@ MLO initialise la SRAM puis donne la main à u-boot.img pour accéder vers le te
 
 
 - dmesg :
-fournit des infos que nous donne le noyau sur la casrte SD. Dans notre cas, ça démontre bien que notre carte s'appelle sdc1 :
+fournit des infos que nous donne le noyau sur la carte SD. Dans notre cas, ça démontre bien que notre carte s'appelle sdc1 :
 
 	student@ubuntu:~/lab12$ dmesg | tail
 	[ 8271.279195] sd 33:0:0:1: Attached scsi generic sg3 type 0
@@ -100,7 +100,7 @@ fournit des infos que nous donne le noyau sur la casrte SD. Dans notre cas, ça 
 
 12.
  
- cette étape permet d'accéder à une interface graphique nous permettant de créer un partition dans le disque qu'il sera possible de booter et qui a une taille de 3.8G ( qui est la taille de tout le stockage )
+ cette étape permet d'accéder à une interface graphique nous permettant de créer une partition dans le disque qu'il sera possible de booter et qui a une taille de 3.8G ( qui est la taille de tout le stockage )
 
 13. sudo mkfs.vfat -F 32 /dev/sdc1 -n boot nous avons formatter notre partition en fat 32.
 
